@@ -1,7 +1,9 @@
 package com.api.tvmaze.infrastructure.adapter.out.tvmaze;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,11 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
 	@Override
     public Flux<Show> searchShows(String query) {
         return tvMazeWebClient.get()
-                .uri(uri -> uri.path("/search/shows").queryParam("q", query).build())
+                .uri(uri -> uri.path("/search/shows")
+                		.queryParam("q", query)
+                		.queryParam("embed", "network")
+                        .queryParam("embed", "webchannel")
+                		.build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, resp ->
                         resp.bodyToMono(String.class)
@@ -42,7 +48,10 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
     @Override
     public Mono<Show> getShowById(Long showId) {
         return tvMazeWebClient.get()
-                .uri("/shows/{id}", showId)
+                .uri(uri -> uri.path("/shows/{id}")
+                        .queryParam("embed", "network")
+                        .queryParam("embed", "webchannel")
+                        .build(showId))
                 .retrieve()
                 .onStatus(status -> status.value() == 404, resp -> Mono.empty())
                 .onStatus(HttpStatusCode::isError, resp ->
@@ -53,12 +62,12 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
     }
 
     private Show toDomain(TvMazeShowResponse dto) {
-        String channelName = Optional.ofNullable(dto.embedded())
-                .map(emb -> {
-                    if (emb.network() != null) return emb.network().name();
-                    if (emb.webChannel() != null) return emb.webChannel().name();
-                    return null;
-                })
+     
+        String channelName = Stream.of(dto.network(), dto.webChannel())
+                .filter(Objects::nonNull)
+                .map(TvMazeShowResponse.Network::name)
+                .filter(Objects::nonNull)
+                .findFirst()
                 .orElse(null);
 
         return new Show(
@@ -66,7 +75,7 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
                 dto.name(),
                 channelName,
                 dto.summary(),
-                dto.genres() != null ? dto.genres() : List.of()
+                Optional.ofNullable(dto.genres()).orElseGet(List::of)
         );
     }
 

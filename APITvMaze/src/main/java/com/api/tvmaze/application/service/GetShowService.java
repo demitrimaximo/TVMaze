@@ -27,8 +27,7 @@ public class GetShowService implements GetShowUseCase{
         Mono<Show> showMono = tvMazeClient.getShowById(showId)
                 .switchIfEmpty(Mono.error(new ShowNotFoundException(showId)));
 
-        // Se ejecutan ambas consultas en paralelo y se combinan
-        return Mono.zip(
+         return Mono.zip(
                 showMono,
                 commentRepository.findByShowId(showId).collectList()
         ).map(tuple -> new ShowWithComments(tuple.getT1(), tuple.getT2()));

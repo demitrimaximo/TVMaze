@@ -31,26 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-# Maven
-target/
-
-# IntelliJ IDEA
-.idea/
-*.iml
-
-# Eclipse
-.project
-.classpath
-.settings/
-
-# Logs
-*.log
-
-# Archivos del sistema
-.DS_Store
-Thumbs.db
-
-# Variables de entorno
-.env

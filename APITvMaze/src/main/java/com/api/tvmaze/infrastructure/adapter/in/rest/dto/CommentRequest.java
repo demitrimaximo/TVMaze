@@ -8,5 +8,5 @@ import jakarta.validation.constraints.NotNull;
 public record CommentRequest(
         @NotNull Long showId,
         @NotBlank String comment,
-        @NotNull @Min(0) @Max(10) Integer rating
+        @NotNull @Min(0) @Max(5) Integer rating
 ) {}
