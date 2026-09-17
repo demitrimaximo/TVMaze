@@ -32,8 +32,6 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
         return tvMazeWebClient.get()
                 .uri(uri -> uri.path("/search/shows")
                 		.queryParam("q", query)
-                		.queryParam("embed", "network")
-                        .queryParam("embed", "webchannel")
                 		.build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, resp ->
@@ -49,8 +47,6 @@ public class TvMazeClientAdapter implements TvMazeClientPort{
     public Mono<Show> getShowById(Long showId) {
         return tvMazeWebClient.get()
                 .uri(uri -> uri.path("/shows/{id}")
-                        .queryParam("embed", "network")
-                        .queryParam("embed", "webchannel")
                         .build(showId))
                 .retrieve()
                 .onStatus(status -> status.value() == 404, resp -> Mono.empty())
