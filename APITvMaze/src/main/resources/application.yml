@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: tvmaze-middleware
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      database: tvmaze
+
+tvmaze:
+  base-url: https://api.tvmaze.com
+
+logging:
+  level:
+    com.api.tvmaze: DEBUG
+    org.springframework.web.reactive.function.client: INFO
