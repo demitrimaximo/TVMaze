@@ -81,13 +81,13 @@ crear su propio cluster gratuito en MongoDB Atlas y usar su propia cadena de con
 Abre una **terminal** y setea la variable `MONGO_URI` con **tu propia**
 cadena de conexión. **La terminal debe ser la misma desde la que correrás el proyecto.**
 
-#### 🪟 Windows CMD
+####  Windows CMD
 
 ```cmd
 set MONGO_URI=mongodb+srv://<usuario>:<password>@<tu-cluster>.xxxxx.mongodb.net/tvmaze?retryWrites=true&w=majority
 ```
 
-#### 🪟 Windows PowerShell
+####  Windows PowerShell
 
 ```powershell
 $env:MONGO_URI="mongodb+srv://<usuario>:<password>@<tu-cluster>.xxxxx.mongodb.net/tvmaze?retryWrites=true&w=majority"
