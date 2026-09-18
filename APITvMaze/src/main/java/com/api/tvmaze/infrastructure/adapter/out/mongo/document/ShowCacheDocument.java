@@ -9,7 +9,7 @@ import java.util.List;
 public class ShowCacheDocument {
 
 	@Id
-	private Long id; // showId
+	private Long id;
 	private String name;
 	private String channel;
 	private String summary;
@@ -25,6 +25,56 @@ public class ShowCacheDocument {
 		this.summary = summary;
 		this.genres = genres;
 	}
+	
+	private ShowCacheDocument(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.channel = builder.channel;
+        this.summary = builder.summary;
+        this.genres = builder.genres;
+    }
+	
+	 public static Builder builder() {
+		 return new Builder();
+	 }
+	 
+	 public static class Builder {
+
+	        private Long id;
+	        private String name;
+	        private String channel;
+	        private String summary;
+	        private List<String> genres;
+
+	        public Builder id(Long id) {
+	            this.id = id;
+	            return this;
+	        }
+
+	        public Builder name(String name) {
+	            this.name = name;
+	            return this;
+	        }
+
+	        public Builder channel(String channel) {
+	            this.channel = channel;
+	            return this;
+	        }
+
+	        public Builder summary(String summary) {
+	            this.summary = summary;
+	            return this;
+	        }
+
+	        public Builder genres(List<String> genres) {
+	            this.genres = genres;
+	            return this;
+	        }
+
+	        public ShowCacheDocument build() {
+	            return new ShowCacheDocument(this);
+	        }
+	    }
 
 	public Long getId() {
 		return id;
