@@ -25,6 +25,11 @@ public class ShowCacheMongoAdapter implements ShowCachePort {
 
     @Override
     public Mono<Show> save(Show show) {
+    	
+        if (show.id() == null) {
+            return Mono.error(new IllegalArgumentException("Cannot cache show without id"));
+        }
+        
         ShowCacheDocument doc = ShowCacheDocument.builder()
                 .id(show.id())
                 .name(show.name())
