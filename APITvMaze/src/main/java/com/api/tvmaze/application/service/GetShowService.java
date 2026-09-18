@@ -32,14 +32,14 @@ public class GetShowService implements GetShowUseCase{
     @Override
     public Mono<ShowWithComments> getShow(Long showId) {
         Mono<Show> showMono = showCachePort.findById(showId)
-                .doOnNext(s -> log.debug("Activando caché for show {}", showId))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.debug("Sin cache para el show {}, yendo a TV Maze", showId);
-                    return tvMazeClient.getShowById(showId)
-                            .switchIfEmpty(Mono.error(new ShowNotFoundException(showId)))
-                            .flatMap(showCachePort::save)
-                            .doOnNext(s -> log.debug("Show {} guardado en cache", showId));
-                }));
+        		.doOnNext(s -> log.debug("Cache HIT for show {}", showId))
+        		.switchIfEmpty(Mono.defer(() -> {
+        		    log.debug("Cache MISS for show {}, fetching from TV Maze", showId);
+        		    return tvMazeClient.getShowById(showId)
+        		            .switchIfEmpty(Mono.error(new ShowNotFoundException(showId)))
+        		            .flatMap(showCachePort::save)
+        		            .doOnNext(s -> log.debug("Show {} saved to cache", showId));
+        		}));
 
         return Mono.zip(
                 showMono,

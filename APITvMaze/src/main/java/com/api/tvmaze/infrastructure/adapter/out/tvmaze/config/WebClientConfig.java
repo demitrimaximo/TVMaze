@@ -16,16 +16,26 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfig {
 	
-	 @Value("${tvmaze.base-url}")
-	 private String baseUrl;
+    private final String baseUrl;
+    private final int connectTimeoutMs;
+    private final int readTimeoutSeconds;
+    
+    public WebClientConfig(
+            @Value("${tvmaze.base-url}") String baseUrl,
+            @Value("${tvmaze.timeout.connect-ms:5000}") int connectTimeoutMs,
+            @Value("${tvmaze.timeout.read-seconds:10}") int readTimeoutSeconds) {
+        this.baseUrl = baseUrl;
+        this.connectTimeoutMs = connectTimeoutMs;
+        this.readTimeoutSeconds = readTimeoutSeconds;
+    }
 
 	 @Bean
-	    public WebClient tvMazeWebClient() {
+	 public WebClient tvMazeWebClient() {
 	        HttpClient httpClient = HttpClient.create()
-	                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5_000)
-	                .responseTimeout(Duration.ofSeconds(10))
-	                .doOnConnected(conn -> conn
-	                        .addHandlerLast(new ReadTimeoutHandler(10, TimeUnit.SECONDS)));
+	                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeoutMs)
+	                .responseTimeout(Duration.ofSeconds(readTimeoutSeconds))
+	                .doOnConnected(conn -> conn.
+	                		addHandlerLast(new ReadTimeoutHandler(readTimeoutSeconds, TimeUnit.SECONDS)));
 
 	        return WebClient.builder()
 	                .baseUrl(baseUrl)

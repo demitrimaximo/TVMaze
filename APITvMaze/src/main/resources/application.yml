@@ -11,6 +11,15 @@ spring:
 
 tvmaze:
   base-url: https://api.tvmaze.com
+  timeout:
+    connect-ms: 5000
+    read-seconds: 10
+    comment-lookup-seconds: 2
+  retry:
+    backoff-ms: 200
+    retryMaxAttempts: 2
+  concurrency:
+    search-comments: 8
 
 logging:
   level:
